@@ -16,11 +16,16 @@ app.use(cors({
   credentials: true // If you're using cookies/sessions
 }));
 // Optional: API info endpoint
-app.get('/api/info', (req, res) => {
+// Add a simple route for the root path
+app.get('/', (req, res) => {
   res.json({
-    status: 'online',
-    version: '1.0.0',
-    timestamp: new Date()
+    message: "Travel Planner API is running",
+    endpoints: [
+      "/signup - Register a new user",
+      "/login - User authentication",
+      "/bookroom - Book a room",
+      "/book-flight - Book a flight"
+    ]
   });
 });
 // MongoDB connection (Replace with Render env variable)
