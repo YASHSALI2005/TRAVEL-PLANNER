@@ -10,8 +10,19 @@ const FlightModel = require("./models/flights");
 
 // Middleware
 app.use(express.json());
-app.use(cors());
-
+// Update CORS configuration
+app.use(cors({
+  origin: ['https://travelplanner-5t26.onrender.com', 'http://localhost:3000'], // Allow both deployed and local frontend
+  credentials: true // If you're using cookies/sessions
+}));
+// Optional: API info endpoint
+app.get('/api/info', (req, res) => {
+  res.json({
+    status: 'online',
+    version: '1.0.0',
+    timestamp: new Date()
+  });
+});
 // MongoDB connection (Replace with Render env variable)
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/LOGIN")
 .then(() => console.log("MongoDB connected"))
@@ -61,12 +72,12 @@ app.post('/book-flight', (req, res) => {
         .catch(err => res.status(500).json({ error: err.message }));
 });
 
-// Serve Frontend static files (Vite or CRA)
-app.use(express.static(path.join(__dirname, "../Frontend/dist"))); // use `../Frontend/build` if CRA
+// // Serve Frontend static files (Vite or CRA)
+// app.use(express.static(path.join(__dirname, "../Frontend/dist"))); // use `../Frontend/build` if CRA
 
-app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../Frontend/dist/index.html")); // or build/index.html
-});
+// app.get("*", (req, res) => {
+//     res.sendFile(path.join(__dirname, "../Frontend/dist/index.html")); // or build/index.html
+// });
 
 // Start server
 const PORT = process.env.PORT || 5001;
