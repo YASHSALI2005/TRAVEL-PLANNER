@@ -42,20 +42,24 @@ app.post('/signup', (req, res) => {
 
 // Login Route
 app.post('/login', (req, res) => {
-    const { email, password } = req.body;
-    SignupModel.findOne({ email, password })
-        .then(user => {
-            if (user) {
-                if (user.password === password) {
-                    res.json("success");
-                } else {
-                    res.status(400).json("this password is incorrect");
-                }
-            } else {
-                res.status(404).json("no record found");
-            }
-        })
-        .catch(err => res.status(500).json({ error: err.message }));
+  const { email, password } = req.body;
+  console.log("Login attempt:", req.body);
+  
+  SignupModel.findOne({ email })
+    .then(user => {
+      if (!user) {
+        return res.status(404).json({ error: "No record found" });
+      }
+      if (user.password !== password) {
+        return res.status(400).json({ error: "Incorrect password" });
+      }
+
+      return res.json({ message: "success" });
+    })
+    .catch(err => {
+      console.error("Login error:", err);
+      res.status(500).json({ error: err.message });
+    });
 });
 
 // Room Booking Route
